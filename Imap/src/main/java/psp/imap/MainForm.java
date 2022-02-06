@@ -26,17 +26,47 @@ public class MainForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        tabpnlCorreos = new javax.swing.JTabbedPane();
+        pnlImap = new javax.swing.JPanel();
+        pnlSmtp = new javax.swing.JPanel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        javax.swing.GroupLayout pnlImapLayout = new javax.swing.GroupLayout(pnlImap);
+        pnlImap.setLayout(pnlImapLayout);
+        pnlImapLayout.setHorizontalGroup(
+            pnlImapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 395, Short.MAX_VALUE)
+        );
+        pnlImapLayout.setVerticalGroup(
+            pnlImapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 272, Short.MAX_VALUE)
+        );
+
+        tabpnlCorreos.addTab("IMAP", pnlImap);
+
+        javax.swing.GroupLayout pnlSmtpLayout = new javax.swing.GroupLayout(pnlSmtp);
+        pnlSmtp.setLayout(pnlSmtpLayout);
+        pnlSmtpLayout.setHorizontalGroup(
+            pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 395, Short.MAX_VALUE)
+        );
+        pnlSmtpLayout.setVerticalGroup(
+            pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 272, Short.MAX_VALUE)
+        );
+
+        tabpnlCorreos.addTab("SMTP", pnlSmtp);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addComponent(tabpnlCorreos)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addComponent(tabpnlCorreos)
         );
 
         pack();
@@ -78,6 +108,9 @@ public class MainForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel pnlImap;
+    private javax.swing.JPanel pnlSmtp;
+    private javax.swing.JTabbedPane tabpnlCorreos;
     // End of variables declaration//GEN-END:variables
 
 }
