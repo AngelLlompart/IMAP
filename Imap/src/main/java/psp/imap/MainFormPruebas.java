@@ -25,10 +25,10 @@ import javax.mail.internet.MimeMessage;
  *
  * @author angel
  */
-public class MainForm extends javax.swing.JFrame {
+public class MainFormPruebas extends javax.swing.JFrame {
 
     /** Creates new form MainForm */
-    public MainForm() {
+    public MainFormPruebas() {
         initComponents();
         this.setLocationRelativeTo(null);
         lblError.setVisible(false);
@@ -223,17 +223,17 @@ public class MainForm extends javax.swing.JFrame {
                 
                 try {
                     
+                    MimeMessage message = new MimeMessage(session);
+                    
+                    //Message msg = new MimeMessage(session);
                     
                     
-                    Message message = new MimeMessage(session);
                     
-                    
-                    
-                    message.addHeader("Content-type", "text/plain; charset=\"iso-2022-jp");
+                    message.addHeader("Content-type", "text/HTML; charset=UTF-8");
                     message.addHeader("format", "flowed");
-                    message.addHeader("Content-Transfer-Encoding", "7bit");
-                    
-                    
+                    message.addHeader("Content-Transfer-Encoding", "8bit");
+                    message.setFrom(new InternetAddress("pruebaspsp111@gmail.com", "pruebas"));
+                    message.setReplyTo(InternetAddress.parse("pruebaspsp111@gmail.com", false));
                     /*
                     Content-Type: text/plain; charset="iso-2022-jp"
                     Content-Transfer-Encoding: 7bit
@@ -241,16 +241,16 @@ public class MainForm extends javax.swing.JFrame {
                     */
                     
                     
-                    message.setFrom(new InternetAddress("pruebaspsp111@gmail.com", "pruebas"));
                     
-                    message.setReplyTo(InternetAddress.parse("pruebaspsp111@gmail.com", false));
+                    
+                    
                     message.setRecipients(
                             Message.RecipientType.TO,
                             InternetAddress.parse("pruebaspsp111@gmail.com, " + txtCorreo.getText())
                     );
-                    //String kjasd = "alkjsd";
-                    message.setSubject("HOLAAA");
-                    message.setText("aslkuhdgdgalof");
+                    String kjasd = "alkjsd";
+                    message.setSubject("HOLAAA", "UTF-8");
+                    message.setText("aslkuhdgdgalof", "UTF-8");
 
                     Transport.send(message);
 
@@ -258,7 +258,7 @@ public class MainForm extends javax.swing.JFrame {
                 } catch (MessagingException e) {
                     e.printStackTrace();
                 } catch (UnsupportedEncodingException ex) {
-                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(MainFormPruebas.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }  
             else {
@@ -288,20 +288,21 @@ public class MainForm extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainFormPruebas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainFormPruebas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainFormPruebas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainFormPruebas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainForm().setVisible(true);
+                new MainFormPruebas().setVisible(true);
             }
         });
     }
