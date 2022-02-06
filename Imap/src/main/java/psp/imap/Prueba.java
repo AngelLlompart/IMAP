@@ -46,7 +46,7 @@ public class Prueba {
       Session session = Session.getDefaultInstance(properties);
       //session.setDebug(true);
       store = session.getStore("imaps");
-      store.connect("imap.gmail.com","angel.llompart.robles@gmail.com", "kuroibara3");
+      store.connect("imap.gmail.com","pruebaspsp111@gmail.com", "pruebas123");
       folder = store.getFolder("Inbox");
       /* Others GMail folders :
        * [Gmail]/All Mail   This folder contains all of your Gmail messages.
