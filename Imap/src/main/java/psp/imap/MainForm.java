@@ -32,8 +32,7 @@ import javax.swing.DefaultListModel;
  */
 public class MainForm extends javax.swing.JFrame implements Runnable {
 
-    private Thread readEmailsThread = new Thread(this);
-    private String correosPath = "D:\\Clases2\\SPPSP\\IMAP\\Imap\\src\\main\\resources\\correos";
+    private String correosPath = "C:\\Users\\angel\\Documents\\Clases2\\SPPSP\\IMAP\\Imap\\src\\main\\resources\\correos"; //"D:\\Clases2\\SPPSP\\IMAP\\Imap\\src\\main\\resources\\correos";
     private File directorio = new File(correosPath);
     private DefaultListModel correosListModel = new DefaultListModel();
 
@@ -161,6 +160,9 @@ public class MainForm extends javax.swing.JFrame implements Runnable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnReadCorreosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReadCorreosActionPerformed
+        Thread readEmailsThread = new Thread(this);
+        correosListModel.clear();
+        lstCorreos.setModel(correosListModel);
         readEmailsThread.start();
         btnReadCorreos.setEnabled(false);
     }//GEN-LAST:event_btnReadCorreosActionPerformed
@@ -253,6 +255,9 @@ public class MainForm extends javax.swing.JFrame implements Runnable {
 
                     System.out.println("MESSAGE #" + (i + 1) + ":");
                     String from = "unknown";
+                    System.out.println(msg.getHeader("Content-type").toString());
+                    System.out.println(msg.getHeader("format"));
+                    System.out.println(msg.getHeader("Content-Transfer-Encoding"));
                     if (msg.getReplyTo().length >= 1) {
                         from = msg.getReplyTo()[0].toString();
                     } else if (msg.getFrom().length >= 1) {
@@ -262,7 +267,7 @@ public class MainForm extends javax.swing.JFrame implements Runnable {
                     //System.out.println("Saving ... " + subject +" " + from);
                     // you may want to replace the spaces with "_"
                     // the TEMP directory is used to store the files
-                    String filename = "D:\\Clases2\\SPPSP\\IMAP\\Imap\\src\\main\\resources\\correos\\" + subject;
+                    String filename = correosPath + "\\" + subject;
                     saveParts(msg.getContent(), filename, subject);
 
                     msg.setFlag(Flags.Flag.SEEN, true);
@@ -275,9 +280,12 @@ public class MainForm extends javax.swing.JFrame implements Runnable {
                     System.out.println("MESSAGE #" + (i + 1) + ":" + " is already saved.");
 
                     String subject = msg.getSubject();
-                }*/
+                }
+                    */
                 prgCorreos.setValue((i + 1) * prgCorreos.getMaximum() / (total));
             }
+                            btnReadCorreos.setEnabled(true);
+
         } finally {
             if (folder != null) {
                 folder.close(true);
@@ -307,7 +315,6 @@ public class MainForm extends javax.swing.JFrame implements Runnable {
                         } else {
                             if (part.isMimeType("text/plain")) {
                                 extension = "txt";
-                                //aqui?
                             } else {
                                 //  Try to get the name of the attachment
                                 extension = part.getDataHandler().getName();
