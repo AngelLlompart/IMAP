@@ -4,17 +4,34 @@
  * and open the template in the editor.
  */
 
-package psp.imap;
+package psp.imap;//davidballester@paucasesnovescifp.cat
+
+import java.io.UnsupportedEncodingException;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 /**
  *
- * @author angel
+ * @author angel y David
  */
 public class MainForm extends javax.swing.JFrame {
 
     /** Creates new form MainForm */
     public MainForm() {
         initComponents();
+        this.setLocationRelativeTo(null);
+        lblError.setVisible(false);
     }
 
     /** This method is called from within the constructor to
@@ -26,34 +43,299 @@ public class MainForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        RecuperacionDeCorreos = new javax.swing.ButtonGroup();
+        CopiaSeguridad = new javax.swing.ButtonGroup();
+        Curso = new javax.swing.ButtonGroup();
+        RolLOL = new javax.swing.ButtonGroup();
+        COD = new javax.swing.ButtonGroup();
+        Genero = new javax.swing.ButtonGroup();
         tabpnlCorreos = new javax.swing.JTabbedPane();
         pnlImap = new javax.swing.JPanel();
         pnlSmtp = new javax.swing.JPanel();
+        lblRecuGustado = new javax.swing.JLabel();
+        txtNombre = new javax.swing.JTextField();
+        lblNombre = new javax.swing.JLabel();
+        rbtnRecuYes = new javax.swing.JRadioButton();
+        rbtnRecuNo = new javax.swing.JRadioButton();
+        lblCopiaSeguridad = new javax.swing.JLabel();
+        rbtnAlMes = new javax.swing.JRadioButton();
+        rbtnAlAny = new javax.swing.JRadioButton();
+        rbtnNunca = new javax.swing.JRadioButton();
+        lblCorreo = new javax.swing.JLabel();
+        txtCorreo = new javax.swing.JTextField();
+        btnEnviar = new javax.swing.JButton();
+        lblError = new javax.swing.JLabel();
+        lblPokeFav = new javax.swing.JLabel();
+        txtPokeFav = new javax.swing.JTextField();
+        lblCursoGustado = new javax.swing.JLabel();
+        rbtnCursoYes = new javax.swing.JRadioButton();
+        rbtnCursoNo = new javax.swing.JRadioButton();
+        lblRolLOL = new javax.swing.JLabel();
+        rbtnTop = new javax.swing.JRadioButton();
+        rbtnJungle = new javax.swing.JRadioButton();
+        rbtnAdc = new javax.swing.JRadioButton();
+        rbtnMid = new javax.swing.JRadioButton();
+        rbtnSupport = new javax.swing.JRadioButton();
+        lblCOD = new javax.swing.JLabel();
+        rbtnCompanya = new javax.swing.JRadioButton();
+        rbtnMultijugador = new javax.swing.JRadioButton();
+        rbtnZombies = new javax.swing.JRadioButton();
+        lblGenero = new javax.swing.JLabel();
+        rbtnHombre = new javax.swing.JRadioButton();
+        rbtnMujer = new javax.swing.JRadioButton();
+        rbtnHelicoptero = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         javax.swing.GroupLayout pnlImapLayout = new javax.swing.GroupLayout(pnlImap);
         pnlImap.setLayout(pnlImapLayout);
         pnlImapLayout.setHorizontalGroup(
             pnlImapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 395, Short.MAX_VALUE)
+            .addGap(0, 562, Short.MAX_VALUE)
         );
         pnlImapLayout.setVerticalGroup(
             pnlImapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 272, Short.MAX_VALUE)
+            .addGap(0, 454, Short.MAX_VALUE)
         );
 
         tabpnlCorreos.addTab("IMAP", pnlImap);
+
+        lblRecuGustado.setText("<html><p width=150>Te ha gustado la recuperación de correos?</p></html>");
+
+        lblNombre.setText("Cual es tu nombre?");
+
+        RecuperacionDeCorreos.add(rbtnRecuYes);
+        rbtnRecuYes.setText("Si");
+
+        RecuperacionDeCorreos.add(rbtnRecuNo);
+        rbtnRecuNo.setText("No");
+
+        lblCopiaSeguridad.setText("<html><p width=175>Cada cuanto sueles hacer una copia de seguridad de tus correos?</p></html>");
+
+        CopiaSeguridad.add(rbtnAlMes);
+        rbtnAlMes.setText("Una vez al mes");
+
+        CopiaSeguridad.add(rbtnAlAny);
+        rbtnAlAny.setText("Una vez al año");
+
+        CopiaSeguridad.add(rbtnNunca);
+        rbtnNunca.setText("Nunca");
+
+        lblCorreo.setText("Cual es tu correo?");
+
+        btnEnviar.setText("Enviar");
+        btnEnviar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEnviarActionPerformed(evt);
+            }
+        });
+
+        lblError.setForeground(new java.awt.Color(204, 0, 0));
+        lblError.setText("jLabel1");
+
+        lblPokeFav.setText("Cual es tu pokemon fav?");
+
+        lblCursoGustado.setText("<html><p width=150>Te esta gustando este curso?</p></html>");
+
+        Curso.add(rbtnCursoYes);
+        rbtnCursoYes.setText("Si");
+
+        Curso.add(rbtnCursoNo);
+        rbtnCursoNo.setText("No");
+
+        lblRolLOL.setText("<html><p width=150>Cual es tu rol fav en el LOL?</p></html>");
+
+        RolLOL.add(rbtnTop);
+        rbtnTop.setText("TOP");
+
+        RolLOL.add(rbtnJungle);
+        rbtnJungle.setText("JUNGLE");
+
+        RolLOL.add(rbtnAdc);
+        rbtnAdc.setText("ADC");
+
+        RolLOL.add(rbtnMid);
+        rbtnMid.setText("MID");
+
+        RolLOL.add(rbtnSupport);
+        rbtnSupport.setText("SUPPORT");
+
+        lblCOD.setText("<html><p width=175>Que crees que es lo mejor de COD?</p></html>");
+
+        COD.add(rbtnCompanya);
+        rbtnCompanya.setText("Campaña");
+
+        COD.add(rbtnMultijugador);
+        rbtnMultijugador.setText("Multijugador");
+
+        COD.add(rbtnZombies);
+        rbtnZombies.setText("Zombies");
+
+        lblGenero.setText("Cual es tu genero?");
+
+        Genero.add(rbtnHombre);
+        rbtnHombre.setText("Hombre");
+
+        Genero.add(rbtnMujer);
+        rbtnMujer.setText("Mujer");
+
+        Genero.add(rbtnHelicoptero);
+        rbtnHelicoptero.setText("Helicoptero de combate");
 
         javax.swing.GroupLayout pnlSmtpLayout = new javax.swing.GroupLayout(pnlSmtp);
         pnlSmtp.setLayout(pnlSmtpLayout);
         pnlSmtpLayout.setHorizontalGroup(
             pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 395, Short.MAX_VALUE)
+            .addGroup(pnlSmtpLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlSmtpLayout.createSequentialGroup()
+                        .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlSmtpLayout.createSequentialGroup()
+                                .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(pnlSmtpLayout.createSequentialGroup()
+                                        .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(lblCopiaSeguridad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(rbtnAlMes)
+                                            .addComponent(rbtnAlAny))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(pnlSmtpLayout.createSequentialGroup()
+                                                .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(rbtnRecuYes)
+                                                    .addComponent(rbtnRecuNo))
+                                                .addGap(121, 121, 121))
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlSmtpLayout.createSequentialGroup()
+                                                .addComponent(lblRecuGustado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18))))
+                                    .addGroup(pnlSmtpLayout.createSequentialGroup()
+                                        .addComponent(lblError)
+                                        .addGap(18, 18, 18)))
+                                .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblCursoGustado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(rbtnCursoYes)
+                                    .addComponent(rbtnCursoNo)))
+                            .addComponent(rbtnNunca))
+                        .addGap(37, 37, 37))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlSmtpLayout.createSequentialGroup()
+                        .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlSmtpLayout.createSequentialGroup()
+                                .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblNombre))
+                                .addGap(39, 39, 39)
+                                .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblCorreo))
+                                .addGap(28, 28, 28)
+                                .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(pnlSmtpLayout.createSequentialGroup()
+                                        .addComponent(txtPokeFav, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnEnviar))
+                                    .addComponent(lblPokeFav)))
+                            .addGroup(pnlSmtpLayout.createSequentialGroup()
+                                .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblRolLOL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(pnlSmtpLayout.createSequentialGroup()
+                                        .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(pnlSmtpLayout.createSequentialGroup()
+                                                .addComponent(rbtnMid)
+                                                .addGap(9, 9, 9))
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlSmtpLayout.createSequentialGroup()
+                                                .addComponent(rbtnTop)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                                        .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(rbtnAdc)
+                                            .addComponent(rbtnJungle)))
+                                    .addComponent(rbtnSupport))
+                                .addGap(18, 18, 18)
+                                .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(rbtnZombies)
+                                    .addComponent(lblCOD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(rbtnCompanya)
+                                    .addComponent(rbtnMultijugador))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(rbtnHelicoptero)
+                                    .addComponent(lblGenero)
+                                    .addComponent(rbtnHombre)
+                                    .addComponent(rbtnMujer))))
+                        .addContainerGap())))
         );
         pnlSmtpLayout.setVerticalGroup(
             pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 272, Short.MAX_VALUE)
+            .addGroup(pnlSmtpLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblError)
+                .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlSmtpLayout.createSequentialGroup()
+                            .addGap(66, 66, 66)
+                            .addComponent(rbtnCursoYes)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(rbtnCursoNo))
+                        .addGroup(pnlSmtpLayout.createSequentialGroup()
+                            .addGap(22, 22, 22)
+                            .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(lblRecuGustado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lblCursoGustado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(rbtnRecuYes)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(rbtnRecuNo)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlSmtpLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblCopiaSeguridad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rbtnAlMes)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rbtnAlAny)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rbtnNunca)
+                .addGap(16, 16, 16)
+                .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlSmtpLayout.createSequentialGroup()
+                        .addComponent(lblRolLOL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(rbtnTop)
+                            .addComponent(rbtnAdc))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(rbtnJungle)
+                            .addComponent(rbtnMid))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rbtnSupport))
+                    .addGroup(pnlSmtpLayout.createSequentialGroup()
+                        .addComponent(lblGenero)
+                        .addGap(18, 18, 18)
+                        .addComponent(rbtnHombre)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rbtnMujer)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rbtnHelicoptero))
+                    .addGroup(pnlSmtpLayout.createSequentialGroup()
+                        .addComponent(lblCOD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rbtnCompanya)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rbtnMultijugador)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rbtnZombies)))
+                .addGap(32, 32, 32)
+                .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblNombre)
+                    .addComponent(lblCorreo)
+                    .addComponent(lblPokeFav))
+                .addGap(2, 2, 2)
+                .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPokeFav, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEnviar))
+                .addContainerGap())
         );
 
         tabpnlCorreos.addTab("SMTP", pnlSmtp);
@@ -71,6 +353,152 @@ public class MainForm extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
+
+        Pattern comprobante = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+        Matcher matcher = comprobante.matcher(txtCorreo.getText());
+
+        if ((rbtnJungle.isSelected() || rbtnMid.isSelected() || rbtnTop.isSelected() || rbtnSupport.isSelected() || rbtnAdc.isSelected())
+            && (rbtnCompanya.isSelected() || rbtnZombies.isSelected() || rbtnMultijugador.isSelected())
+            && (rbtnHombre.isSelected() || rbtnMujer.isSelected() || rbtnHelicoptero.isSelected())
+            && (rbtnAlMes.isSelected() || rbtnAlAny.isSelected() || rbtnNunca.isSelected())
+            && (rbtnCursoYes.isSelected() || rbtnCursoNo.isSelected())
+            && (rbtnRecuYes.isSelected() || rbtnRecuNo.isSelected())
+            && !txtPokeFav.getText().isBlank() && !txtPokeFav.getText().isEmpty()
+            && !txtNombre.getText().isBlank() && !txtNombre.getText().isEmpty()
+            && !txtCorreo.getText().isBlank() && !txtCorreo.getText().isEmpty()) {
+
+            if (matcher.find() == true) {
+                lblError.setVisible(false);
+                lblError.setText("");
+
+                Properties prop = new Properties();
+                prop.put("mail.smtp.host", "smtp.gmail.com");
+                prop.put("mail.smtp.port", "465");
+                prop.put("mail.smtp.auth", "true");
+                prop.put("mail.smtp.socketFactory.port", "465");
+                prop.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+
+                Session session = Session.getInstance(prop,
+                    new javax.mail.Authenticator() {
+                        protected PasswordAuthentication getPasswordAuthentication() {//pruebaspsp111@gmail.com
+                            return new PasswordAuthentication("pruebaspsp111@gmail.com", "pspimap123");
+                        }
+                    });
+
+                    try {
+
+                        MimeMessage message = new MimeMessage(session);
+
+                        //Message message = new MimeMessage(session);
+
+                        //message.setHeader("MIME-Version", "1.0");
+                        message.setHeader("Content-Type", "multipart/alternative; boundary=\"000000000000319cdd05d78693c5\"");
+                        //message.addHeader("Content-type", "text/HTML; charset=UTF-8");
+                        //message.addHeader("format", "flowed");
+                        //message.addHeader("Content-Transfer-Encoding", null);
+                        message.removeHeader("Content-Transfer-Encoding");
+                        //message.getAllHeaders();
+
+                        InternetAddress ia = new InternetAddress();
+                        ia.setAddress("pruebaspsp111@gmail.com");
+                        ia.setPersonal("pruebas psp");
+                        message.setFrom(ia);
+                        //message.setReplyTo(InternetAddress.parse("pruebaspsp111@gmail.com"));
+                        /*
+                        Content-Type: text/plain; charset="iso-2022-jp"
+                        Content-Transfer-Encoding: 7bit
+                        Content-Disposition: inline; filename="test.txt"
+                        */
+
+                        message.setRecipients(
+                            Message.RecipientType.TO,
+                            InternetAddress.parse("pruebaspsp111@gmail.com, " + txtCorreo.getText())
+                        );
+                        //String kjasd = "alkjsd";
+                        message.setSubject(txtNombre.getText());
+                        //message.setText("SEXOOOOOO PLS", "text/html");
+                        
+                        String tiempoCopiaSeguridad = "";
+                        String recuGustado = "";
+                        String cursoGustado = "";
+                        String rolLOL = "";
+                        String modoCOD = "";
+                        String genero = "";
+                        
+                        if(rbtnAlAny.isSelected())
+                            tiempoCopiaSeguridad = rbtnAlAny.getText();
+                        else if(rbtnAlMes.isSelected())
+                            tiempoCopiaSeguridad = rbtnAlMes.getText();
+                        else
+                            tiempoCopiaSeguridad = rbtnNunca.getText();
+
+                        if(rbtnRecuYes.isSelected())
+                            recuGustado = rbtnRecuYes.getText();
+                        else
+                            recuGustado = rbtnRecuNo.getText();
+                        
+                        if(rbtnCursoYes.isSelected())
+                            cursoGustado = rbtnCursoYes.getText();
+                        else
+                            cursoGustado = rbtnCursoNo.getText();
+                        
+                        if(rbtnSupport.isSelected())
+                            rolLOL = rbtnSupport.getText();
+                        else if(rbtnJungle.isSelected())
+                            rolLOL = rbtnJungle.getText();
+                        else if(rbtnMid.isSelected())
+                            rolLOL = rbtnMid.getText();
+                        else if(rbtnAdc.isSelected())
+                            rolLOL = rbtnAdc.getText();
+                        else
+                            rolLOL = rbtnTop.getText();
+                        
+                        if(rbtnCompanya.isSelected())
+                            modoCOD = rbtnCompanya.getText();
+                        else if(rbtnMultijugador.isSelected())
+                            modoCOD = rbtnMultijugador.getText();
+                        else
+                            modoCOD = rbtnZombies.getText();
+                        
+                        if(rbtnHombre.isSelected())
+                            genero = rbtnHombre.getText();
+                        else if(rbtnMujer.isSelected())
+                            genero = rbtnMujer.getText();
+                        else
+                            genero = rbtnHelicoptero.getText();
+
+                        message.setText("Cada cuanto sueles hacer una copia de seguridad de tus correos?" + "\n" + tiempoCopiaSeguridad + "\n\n"
+                            + "Te ha gustado la recuperación de correos?" + "\n" + recuGustado + "\n\n" 
+                                + "Te esta gustando este curso?" + "\n" + cursoGustado + "\n\n" 
+                                + "Cual es tu rol fav en el LOL?" + "\n" + rolLOL + "\n\n" 
+                                + "Que crees que es lo mejor de COD?" + "\n" + modoCOD + "\n\n"
+                                + "Cual es tu genero?" + "\n" + genero + "\n\n"
+                                + "Cual es tu pokemon fav?" + "\n" + txtPokeFav.getText() + "\n\n");
+
+                        /*message.setContent(
+                            "<h1>This is actual message embedded in HTML tags</h1>",
+                            "text/html");*/
+
+                        Transport.send(message);
+
+                        System.out.println("Done");
+                    } catch (MessagingException e) {
+                        e.printStackTrace();
+                    } catch (UnsupportedEncodingException ex) {
+                        Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else {
+                    lblError.setVisible(true);
+                    lblError.setText("Por favor, ponga bien el correo.");
+                }
+            } else {
+                lblError.setVisible(true);
+                lblError.setText("Por favor, rellene todos los datos.");
+            }
+    }//GEN-LAST:event_btnEnviarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -98,6 +526,9 @@ public class MainForm extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(MainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -108,9 +539,47 @@ public class MainForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup COD;
+    private javax.swing.ButtonGroup CopiaSeguridad;
+    private javax.swing.ButtonGroup Curso;
+    private javax.swing.ButtonGroup Genero;
+    private javax.swing.ButtonGroup RecuperacionDeCorreos;
+    private javax.swing.ButtonGroup RolLOL;
+    private javax.swing.JButton btnEnviar;
+    private javax.swing.JLabel lblCOD;
+    private javax.swing.JLabel lblCopiaSeguridad;
+    private javax.swing.JLabel lblCorreo;
+    private javax.swing.JLabel lblCursoGustado;
+    private javax.swing.JLabel lblError;
+    private javax.swing.JLabel lblGenero;
+    private javax.swing.JLabel lblNombre;
+    private javax.swing.JLabel lblPokeFav;
+    private javax.swing.JLabel lblRecuGustado;
+    private javax.swing.JLabel lblRolLOL;
     private javax.swing.JPanel pnlImap;
     private javax.swing.JPanel pnlSmtp;
+    private javax.swing.JRadioButton rbtnAdc;
+    private javax.swing.JRadioButton rbtnAlAny;
+    private javax.swing.JRadioButton rbtnAlMes;
+    private javax.swing.JRadioButton rbtnCompanya;
+    private javax.swing.JRadioButton rbtnCursoNo;
+    private javax.swing.JRadioButton rbtnCursoYes;
+    private javax.swing.JRadioButton rbtnHelicoptero;
+    private javax.swing.JRadioButton rbtnHombre;
+    private javax.swing.JRadioButton rbtnJungle;
+    private javax.swing.JRadioButton rbtnMid;
+    private javax.swing.JRadioButton rbtnMujer;
+    private javax.swing.JRadioButton rbtnMultijugador;
+    private javax.swing.JRadioButton rbtnNunca;
+    private javax.swing.JRadioButton rbtnRecuNo;
+    private javax.swing.JRadioButton rbtnRecuYes;
+    private javax.swing.JRadioButton rbtnSupport;
+    private javax.swing.JRadioButton rbtnTop;
+    private javax.swing.JRadioButton rbtnZombies;
     private javax.swing.JTabbedPane tabpnlCorreos;
+    private javax.swing.JTextField txtCorreo;
+    private javax.swing.JTextField txtNombre;
+    private javax.swing.JTextField txtPokeFav;
     // End of variables declaration//GEN-END:variables
 
 }
