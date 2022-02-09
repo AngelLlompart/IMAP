@@ -12,64 +12,32 @@ package psp.imap;
 import java.io.*;
 import java.util.*;
 import javax.mail.*;
-import javax.mail.internet.*;
 
-public class Prueba {
+import javax.mail.internet.MimeBodyPart;
 
-  public Prueba() {}
-
-  //
-  // inspired by :
-  // http://www.mikedesjardins.net/content/2008/03/using-javamail-to-read-and-extract/
-  //
+public class ReceiveMailPOP3 {
+  private static final String HOST = "pop.gmail.com";
+  private static final String USERNAME = "pruebaspsp111@gmail.com";
+  private static final String PASSWORD = "pspimap123";
 
   public static void doit() throws MessagingException, IOException {
     Folder folder = null;
     Store store = null;
     try {
-      Properties properties = new Properties();
- 
-        // server setting
-        properties.put("mail.imap.host", "imap.gmail.com");
-        properties.put("mail.imap.port", "993");
- 
-        // SSL setting
-        properties.setProperty("mail.imap.socketFactory.class",
-                "javax.net.ssl.SSLSocketFactory");
-        properties.setProperty("mail.imap.socketFactory.fallback",
-                "false");
-        properties.setProperty("mail.imap.socketFactory.port",
-                String.valueOf(993));
-        
-      properties.setProperty("mail.store.protocol", "imaps");
-
-      Session session = Session.getDefaultInstance(properties);
-      //session.setDebug(true);
-      store = session.getStore("imaps");
-      store.connect("imap.gmail.com","pruebaspsp111@gmail.com", "pruebas123");
-      folder = store.getFolder("Inbox");
-      /* Others GMail folders :
-       * [Gmail]/All Mail   This folder contains all of your Gmail messages.
-       * [Gmail]/Drafts     Your drafts.
-       * [Gmail]/Sent Mail  Messages you sent to other people.
-       * [Gmail]/Spam       Messages marked as spam.
-       * [Gmail]/Starred    Starred messages.
-       * [Gmail]/Trash      Messages deleted from Gmail.
-       */
-      folder.open(Folder.READ_WRITE);
-      Message messages[] = folder.getMessages();
+      Properties props = new Properties();
+      props.put("mail.store.protocol", "pop3s"); // Google uses POP3S not POP3
+      Session session = Session.getDefaultInstance(props);
+      // session.setDebug(true);
+      store = session.getStore();
+      store.connect(HOST, USERNAME, PASSWORD);
+      folder = store.getDefaultFolder().getFolder("INBOX");
+      folder.open(Folder.READ_ONLY);
+      Message[] messages = folder.getMessages();
       System.out.println("No of Messages : " + folder.getMessageCount());
       System.out.println("No of Unread Messages : " + folder.getUnreadMessageCount());
       for (int i=0; i < messages.length; ++i) {
         System.out.println("MESSAGE #" + (i + 1) + ":");
         Message msg = messages[i];
-        /*
-          if we don''t want to fetch messages already processed
-          if (!msg.isSet(Flags.Flag.SEEN)) {
-             String from = "unknown";
-             ...
-          }
-        */
         String from = "unknown";
         if (msg.getReplyTo().length >= 1) {
           from = msg.getReplyTo()[0].toString();
@@ -80,12 +48,9 @@ public class Prueba {
         String subject = msg.getSubject();
         System.out.println("Saving ... " + subject +" " + from);
         // you may want to replace the spaces with "_"
-        // the TEMP directory is used to store the files
-//aa        //String filename = "C:\\Users\\angel\\Documents\\msgs\\" +  subject;
-        saveParts(msg.getContent(), "AA");
-        msg.setFlag(Flags.Flag.SEEN,true);
-        // to delete the message
-        // msg.setFlag(Flags.Flag.DELETED, true);
+        // the files will be saved into the TEMP directory
+        String filename = "C:\\Users\\angel\\Documents\\Clases2\\SPPSP\\IMAP\\Imap\\src\\main\\resources\\correos\\" +  subject;
+        saveParts(msg.getContent(), filename);
       }
     }
     finally {
@@ -124,7 +89,7 @@ public class Prueba {
               }
               filename = filename + "." + extension;
               System.out.println("... " + filename);
-              out = new FileOutputStream(new File(filename), true);
+              out = new FileOutputStream(new File(filename));
               in = part.getInputStream();
               int k;
               while ((k = in.read()) != -1) {
@@ -142,6 +107,6 @@ public class Prueba {
   }
 
   public static void main(String args[]) throws Exception {
-    Prueba.doit();
+    ReceiveMailPOP3.doit();
   }
 }
