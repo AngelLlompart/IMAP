@@ -13,11 +13,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Enumeration;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.Flags;
 import javax.mail.Folder;
+import javax.mail.Header;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -25,14 +27,15 @@ import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.internet.MimeBodyPart;
 import javax.swing.DefaultListModel;
+import javax.swing.JFileChooser;
 
 /**
  *
  * @author angel
  */
-public class MainForm extends javax.swing.JFrame implements Runnable {
+public class MainForm extends javax.swing.JFrame {
 
-    private String correosPath = "C:\\Users\\angel\\Documents\\Clases2\\SPPSP\\IMAP\\Imap\\src\\main\\resources\\correos"; //"D:\\Clases2\\SPPSP\\IMAP\\Imap\\src\\main\\resources\\correos";
+    private String correosPath = "src/main/resources/correos"; //"D:\\Clases2\\SPPSP\\IMAP\\Imap\\src\\main\\resources\\correos";
     private File directorio = new File(correosPath);
     private DefaultListModel correosListModel = new DefaultListModel();
 
@@ -61,9 +64,20 @@ public class MainForm extends javax.swing.JFrame implements Runnable {
         prgCorreos = new javax.swing.JProgressBar();
         jScrollPane3 = new javax.swing.JScrollPane();
         lstCorreos = new javax.swing.JList<>();
+        txtFileName = new javax.swing.JTextField();
+        btnSelectFile = new javax.swing.JButton();
+        lblMessage = new javax.swing.JLabel();
+        lblMails = new javax.swing.JLabel();
+        lblFolder = new javax.swing.JLabel();
         pnlSmtp = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         txaMensage.setEditable(false);
         txaMensage.setColumns(20);
@@ -72,6 +86,7 @@ public class MainForm extends javax.swing.JFrame implements Runnable {
         txaMensage.setWrapStyleWord(true);
         jScrollPane2.setViewportView(txaMensage);
 
+        btnReadCorreos.setFont(new java.awt.Font("Century Gothic", 1, 14)); // NOI18N
         btnReadCorreos.setText("Read");
         btnReadCorreos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -93,41 +108,77 @@ public class MainForm extends javax.swing.JFrame implements Runnable {
         });
         jScrollPane3.setViewportView(lstCorreos);
 
+        txtFileName.setEditable(false);
+        txtFileName.setText("jTextField1");
+        txtFileName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFileNameActionPerformed(evt);
+            }
+        });
+
+        btnSelectFile.setText("Select");
+        btnSelectFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSelecFile(evt);
+            }
+        });
+
+        lblMessage.setText("Message: ");
+
+        lblMails.setText("Mails:");
+
+        lblFolder.setText("Select folder to save mails:");
+
         javax.swing.GroupLayout pnlImapLayout = new javax.swing.GroupLayout(pnlImap);
         pnlImap.setLayout(pnlImapLayout);
         pnlImapLayout.setHorizontalGroup(
             pnlImapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlImapLayout.createSequentialGroup()
+                .addGap(8, 8, 8)
                 .addGroup(pnlImapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(prgCorreos, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(pnlImapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(lblTotalCorreos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)))
-                .addGap(27, 27, 27)
-                .addGroup(pnlImapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlImapLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnReadCorreos, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(66, 66, 66))
-                    .addGroup(pnlImapLayout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
-                        .addContainerGap())))
+                    .addGroup(pnlImapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(lblMails)
+                        .addComponent(lblTotalCorreos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(prgCorreos, javax.swing.GroupLayout.DEFAULT_SIZE, 229, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(pnlImapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lblMessage)
+                    .addComponent(lblFolder)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlImapLayout.createSequentialGroup()
+                        .addComponent(txtFileName)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnSelectFile))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
+                    .addComponent(btnReadCorreos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlImapLayout.setVerticalGroup(
             pnlImapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlImapLayout.createSequentialGroup()
-                .addGroup(pnlImapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addContainerGap()
+                .addGroup(pnlImapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblMessage)
+                    .addComponent(lblMails))
+                .addGap(5, 5, 5)
+                .addGroup(pnlImapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(pnlImapLayout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblFolder)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblTotalCorreos, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE))
-                    .addGroup(pnlImapLayout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(pnlImapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnSelectFile))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnReadCorreos)))
-                .addGap(7, 7, 7)
-                .addComponent(prgCorreos, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(14, 14, 14))
+                        .addComponent(btnReadCorreos, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlImapLayout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblTotalCorreos, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                        .addComponent(prgCorreos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tabpnlCorreos.addTab("IMAP", pnlImap);
@@ -136,11 +187,11 @@ public class MainForm extends javax.swing.JFrame implements Runnable {
         pnlSmtp.setLayout(pnlSmtpLayout);
         pnlSmtpLayout.setHorizontalGroup(
             pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 395, Short.MAX_VALUE)
+            .addGap(0, 559, Short.MAX_VALUE)
         );
         pnlSmtpLayout.setVerticalGroup(
             pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 283, Short.MAX_VALUE)
+            .addGap(0, 452, Short.MAX_VALUE)
         );
 
         tabpnlCorreos.addTab("SMTP", pnlSmtp);
@@ -157,13 +208,15 @@ public class MainForm extends javax.swing.JFrame implements Runnable {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnReadCorreosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReadCorreosActionPerformed
-        Thread readEmailsThread = new Thread(this);
         correosListModel.clear();
         lstCorreos.setModel(correosListModel);
+        Thread readEmailsThread = new Thread(new HiloCorreos(lblTotalCorreos, correosPath, prgCorreos, btnSelectFile, btnReadCorreos, directorio, correosListModel, lstCorreos));
         readEmailsThread.start();
+        btnSelectFile.setEnabled(false);
         btnReadCorreos.setEnabled(false);
     }//GEN-LAST:event_btnReadCorreosActionPerformed
 
@@ -196,21 +249,28 @@ public class MainForm extends javax.swing.JFrame implements Runnable {
         }
     }//GEN-LAST:event_lstCorreosValueChanged
 
-    @Override
-    public void run() {
-        try {
-            leerCorreos();
-        } catch (MessagingException ex) {
-            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+    private void btnSelecFile(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelecFile
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int returnValue = fileChooser.showOpenDialog(this);
+        if (returnValue == JFileChooser.APPROVE_OPTION){
+            txtFileName.setText(fileChooser.getSelectedFile().getAbsolutePath());
+            correosPath = fileChooser.getSelectedFile().getAbsolutePath();
+            directorio = new File(correosPath);
         }
-    }
+    }//GEN-LAST:event_btnSelecFile
 
-    /**
-     * @param args the command line arguments
-     */
-    private void leerCorreos() throws MessagingException, IOException {
+    private void txtFileNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFileNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFileNameActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        txtFileName.setText(correosPath);
+    }//GEN-LAST:event_formWindowOpened
+
+    
+
+   /* public void leerCorreos() throws MessagingException, IOException {
         cargarLista();
         Folder folder = null;
         Store store = null;
@@ -244,18 +304,20 @@ public class MainForm extends javax.swing.JFrame implements Runnable {
             for (int i = 0; i < messages.length; ++i) {
 
                 Message msg = messages[i];
-                /*
-            if we don''t want to fetch messages already processed
-            if (!msg.isSet(Flags.Flag.SEEN)) {
-               String from = "unknown";
-               ...
-            }
-                 */
-                //if (!msg.isSet(Flags.Flag.SEEN)) {
-
+                
+                //if we don''t want to fetch messages already processed
+        
+                if (!msg.isSet(Flags.Flag.SEEN)) {
+                    Enumeration headers = messages[i].getAllHeaders();
+                    while (headers.hasMoreElements()) {
+                        Header h = (Header) headers.nextElement();
+                        System.out.println(h.getName() + ": " + h.getValue());
+                    }
+                    System.out.println();
+  
                     System.out.println("MESSAGE #" + (i + 1) + ":");
                     String from = "unknown";
-                    System.out.println(msg.getHeader("Content-type").toString());
+                    System.out.println(msg.getHeader("Content-type"));
                     System.out.println(msg.getHeader("format"));
                     System.out.println(msg.getHeader("Content-Transfer-Encoding"));
                     if (msg.getReplyTo().length >= 1) {
@@ -267,7 +329,7 @@ public class MainForm extends javax.swing.JFrame implements Runnable {
                     //System.out.println("Saving ... " + subject +" " + from);
                     // you may want to replace the spaces with "_"
                     // the TEMP directory is used to store the files
-                    String filename = correosPath + "\\" + subject;
+                    String filename = correosPath + "/" + subject;
                     saveParts(msg.getContent(), filename, subject);
 
                     msg.setFlag(Flags.Flag.SEEN, true);
@@ -275,16 +337,16 @@ public class MainForm extends javax.swing.JFrame implements Runnable {
                     
                     // to delete the message
                     // msg.setFlag(Flags.Flag.DELETED, true);
-                /*} else {
+                } else {
 
                     System.out.println("MESSAGE #" + (i + 1) + ":" + " is already saved.");
 
                     String subject = msg.getSubject();
                 }
-                    */
                 prgCorreos.setValue((i + 1) * prgCorreos.getMaximum() / (total));
             }
-                            btnReadCorreos.setEnabled(true);
+            btnSelectFile.setEnabled(true);
+            btnReadCorreos.setEnabled(true);
 
         } finally {
             if (folder != null) {
@@ -296,7 +358,7 @@ public class MainForm extends javax.swing.JFrame implements Runnable {
         }
     }
 
-    private void saveParts(Object content, String filename, String subject) throws IOException, MessagingException {
+    public void saveParts(Object content, String filename, String subject) throws IOException, MessagingException {
         OutputStream out = null;
         InputStream in = null;
         try {
@@ -346,14 +408,14 @@ public class MainForm extends javax.swing.JFrame implements Runnable {
         }
     }
 
-    private void cargarLista() {
+    public void cargarLista() {
         //correosListModel.clear();
         for (String s : directorio.list()) {
             correosListModel.addElement(s);
         }
         lstCorreos.setModel(correosListModel);
     }
-
+    */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -388,8 +450,12 @@ public class MainForm extends javax.swing.JFrame implements Runnable {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnReadCorreos;
+    private javax.swing.JButton btnSelectFile;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel lblFolder;
+    private javax.swing.JLabel lblMails;
+    private javax.swing.JLabel lblMessage;
     private javax.swing.JLabel lblTotalCorreos;
     private javax.swing.JList<String> lstCorreos;
     private javax.swing.JPanel pnlImap;
@@ -397,6 +463,7 @@ public class MainForm extends javax.swing.JFrame implements Runnable {
     private javax.swing.JProgressBar prgCorreos;
     private javax.swing.JTabbedPane tabpnlCorreos;
     private javax.swing.JTextArea txaMensage;
+    private javax.swing.JTextField txtFileName;
     // End of variables declaration//GEN-END:variables
 
 }
