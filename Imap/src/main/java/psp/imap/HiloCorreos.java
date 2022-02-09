@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -42,6 +43,7 @@ public class HiloCorreos implements Runnable{
     private static File directorio;
     private static DefaultListModel correosListModel;
     private static JList lstCorreos;
+    private ArrayList<String> correosGuardados = new ArrayList<>();
     public HiloCorreos(JLabel totalCorreos, String correosPath, JProgressBar progressBar, JButton btnSelectFile, JButton btnReadCorreos, File directorio, DefaultListModel correosListModel, JList lstCorreos) {
         this.totalCorreos = totalCorreos;
         this.correosPath = correosPath;
@@ -102,6 +104,7 @@ public class HiloCorreos implements Runnable{
                 //if we don''t want to fetch messages already processed
         
                 //if (!msg.isSet(Flags.Flag.SEEN)) {
+                if(!correosGuardados.contains(msg.getSubject())){
                     /*Enumeration headers = messages[i].getAllHeaders();
                     while (headers.hasMoreElements()) {
                         Header h = (Header) headers.nextElement();
@@ -120,6 +123,7 @@ public class HiloCorreos implements Runnable{
                         from = msg.getFrom()[0].toString();
                     }
                     String subject = msg.getSubject();
+                    System.out.println(subject);
                     //System.out.println("Saving ... " + subject +" " + from);
                     // you may want to replace the spaces with "_"
                     // the TEMP directory is used to store the files
@@ -131,12 +135,12 @@ public class HiloCorreos implements Runnable{
                     
                     // to delete the message
                     // msg.setFlag(Flags.Flag.DELETED, true);
-                /*} else {
+                } else {
 
                     System.out.println("MESSAGE #" + (i + 1) + ":" + " is already saved.");
 
                     String subject = msg.getSubject();
-                }*/
+                }
                 prgCorreos.setValue((i + 1) * prgCorreos.getMaximum() / (total));
             }
             btnSelectFile.setEnabled(true);
@@ -207,6 +211,8 @@ public class HiloCorreos implements Runnable{
         for (File f : directorio.listFiles()) {
             if(!f.isDirectory()){
                 correosListModel.addElement(f.getName());
+                String[] correo = f.getName().split(".txt");
+                correosGuardados.add(correo[0]);
             }
         }
         lstCorreos.setModel(correosListModel);
