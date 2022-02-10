@@ -109,9 +109,6 @@ public class HiloCorreos implements Runnable{
   
                     System.out.println("MESSAGE #" + (i + 1) + ":");
                     String from = "unknown";
-                    System.out.println(msg.getHeader("Content-type"));
-                    System.out.println(msg.getHeader("format"));
-                    System.out.println(msg.getHeader("Content-Transfer-Encoding"));
                     if (msg.getReplyTo().length >= 1) {
                         from = msg.getReplyTo()[0].toString();
                     } else if (msg.getFrom().length >= 1) {
