@@ -1,48 +1,27 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package psp.imap;//davidballester@paucasesnovescifp.cat
+package psp.imap;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.mail.Message;
-import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Enumeration;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.mail.Flags;
-import javax.mail.Folder;
-import javax.mail.Header;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
 import javax.mail.Session;
-import javax.mail.Store;
-import javax.mail.internet.MimeBodyPart;
+import javax.swing.ButtonModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -52,7 +31,7 @@ public class MainForm extends javax.swing.JFrame {
 
     private String correosPath = "src/main/resources/correos"; //"D:\\Clases2\\SPPSP\\IMAP\\Imap\\src\\main\\resources\\correos";
     private File directorio = new File(correosPath);
-    private DefaultListModel correosListModel = new DefaultListModel();
+    private DefaultListModel correosListModel = new DefaultListModel();//davidballester@paucasesnovescifp.cat
 
     /**
      * Creates new form MainForm
@@ -165,11 +144,6 @@ public class MainForm extends javax.swing.JFrame {
 
         txtFileName.setEditable(false);
         txtFileName.setText("jTextField1");
-        txtFileName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtFileNameActionPerformed(evt);
-            }
-        });
 
         btnSelectFile.setText("Select");
         btnSelectFile.addActionListener(new java.awt.event.ActionListener() {
@@ -347,7 +321,7 @@ public class MainForm extends javax.swing.JFrame {
                                         .addGap(18, 18, 18))))
                             .addGroup(pnlSmtpLayout.createSequentialGroup()
                                 .addComponent(lblError)
-                                .addGap(18, 18, 18)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                         .addGroup(pnlSmtpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblCursoGustado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(rbtnCursoYes)
@@ -535,162 +509,10 @@ public class MainForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSelecFile
 
-    private void txtFileNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFileNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFileNameActionPerformed
-
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         txtFileName.setText(correosPath);
     }//GEN-LAST:event_formWindowOpened
 
-    
-
-   /* public void leerCorreos() throws MessagingException, IOException {
-        cargarLista();
-        Folder folder = null;
-        Store store = null;
-        try {
-            Properties properties = new Properties();
-
-            // server setting
-            properties.put("mail.imap.host", "imap.gmail.com");
-            properties.put("mail.imap.port", "993");
-
-            // SSL setting
-            properties.setProperty("mail.imap.socketFactory.class",
-                    "javax.net.ssl.SSLSocketFactory");
-            properties.setProperty("mail.imap.socketFactory.fallback",
-                    "false");
-            properties.setProperty("mail.imap.socketFactory.port",
-                    String.valueOf(993));
-
-            properties.setProperty("mail.store.protocol", "imaps");
-
-            Session session = Session.getDefaultInstance(properties);
-            store = session.getStore("imaps");
-            store.connect("imap.gmail.com", "pruebaspsp111@gmail.com", "pspimap123");
-            folder = store.getFolder("Inbox");
-
-            folder.open(Folder.READ_WRITE);
-            Message messages[] = folder.getMessages();
-            int total = folder.getMessageCount();
-            lblTotalCorreos.setText("Número total de mensages: " + total);
-            //System.out.println("No of Unread Messages : " + folder.getUnreadMessageCount());
-            for (int i = 0; i < messages.length; ++i) {
-
-                Message msg = messages[i];
-                
-                //if we don''t want to fetch messages already processed
-        
-                if (!msg.isSet(Flags.Flag.SEEN)) {
-                    Enumeration headers = messages[i].getAllHeaders();
-                    while (headers.hasMoreElements()) {
-                        Header h = (Header) headers.nextElement();
-                        System.out.println(h.getName() + ": " + h.getValue());
-                    }
-                    System.out.println();
-  
-                    System.out.println("MESSAGE #" + (i + 1) + ":");
-                    String from = "unknown";
-                    System.out.println(msg.getHeader("Content-type"));
-                    System.out.println(msg.getHeader("format"));
-                    System.out.println(msg.getHeader("Content-Transfer-Encoding"));
-                    if (msg.getReplyTo().length >= 1) {
-                        from = msg.getReplyTo()[0].toString();
-                    } else if (msg.getFrom().length >= 1) {
-                        from = msg.getFrom()[0].toString();
-                    }
-                    String subject = msg.getSubject();
-                    //System.out.println("Saving ... " + subject +" " + from);
-                    // you may want to replace the spaces with "_"
-                    // the TEMP directory is used to store the files
-                    String filename = correosPath + "/" + subject;
-                    saveParts(msg.getContent(), filename, subject);
-
-                    msg.setFlag(Flags.Flag.SEEN, true);
-
-                    
-                    // to delete the message
-                    // msg.setFlag(Flags.Flag.DELETED, true);
-                } else {
-
-                    System.out.println("MESSAGE #" + (i + 1) + ":" + " is already saved.");
-
-                    String subject = msg.getSubject();
-                }
-                prgCorreos.setValue((i + 1) * prgCorreos.getMaximum() / (total));
-            }
-            btnSelectFile.setEnabled(true);
-            btnReadCorreos.setEnabled(true);
-
-        } finally {
-            if (folder != null) {
-                folder.close(true);
-            }
-            if (store != null) {
-                store.close();
-            }
-        }
-    }
-
-    public void saveParts(Object content, String filename, String subject) throws IOException, MessagingException {
-        OutputStream out = null;
-        InputStream in = null;
-        try {
-            if (content instanceof Multipart) {
-                Multipart multi = ((Multipart) content);
-                int parts = multi.getCount();
-                for (int j = 0; j < parts; ++j) {
-                    MimeBodyPart part = (MimeBodyPart) multi.getBodyPart(j);
-                    if (part.getContent() instanceof Multipart) {
-                        // part-within-a-part, do some recursion...
-                        saveParts(part.getContent(), filename, subject);
-                    } else {
-                        String extension = "";
-                        if (part.isMimeType("text/html")) {
-                            extension = "html";
-                        } else {
-                            if (part.isMimeType("text/plain")) {
-                                extension = "txt";
-                            } else {
-                                //  Try to get the name of the attachment
-                                extension = part.getDataHandler().getName();
-                            }
-                            filename = filename + "." + extension;
-                            System.out.println("... " + filename);
-                            //cargarLista();
-                            //con esto el .txt.null no se pone y no se puede leer, mejor sera cargarlista de 0 aunque tarde mas? idk
-                            correosListModel.addElement(subject + "." + extension);
-                            lstCorreos.setModel(correosListModel);
-                            out = new FileOutputStream(new File(filename), true);
-                            in = part.getInputStream();
-                            int k;
-                            while ((k = in.read()) != -1) {
-                                out.write(k);
-                            }
-                        }
-                    }
-                }
-            }
-        } finally {
-            if (in != null) {
-                in.close();
-            }
-            if (out != null) {
-                out.flush();
-                out.close();
-            }
-        }
-    }
-
-    public void cargarLista() {
-        //correosListModel.clear();
-        for (String s : directorio.list()) {
-            correosListModel.addElement(s);
-        }
-        lstCorreos.setModel(correosListModel);
-    }
-    */
     private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
 
         Pattern comprobante = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
@@ -719,7 +541,7 @@ public class MainForm extends javax.swing.JFrame {
 
                 Session session = Session.getInstance(prop,
                     new javax.mail.Authenticator() {
-                        protected PasswordAuthentication getPasswordAuthentication() {//pruebaspsp111@gmail.com
+                        protected PasswordAuthentication getPasswordAuthentication() {
                             return new PasswordAuthentication("pruebaspsp111@gmail.com", "pspimap123");
                         }
                     });
@@ -727,35 +549,21 @@ public class MainForm extends javax.swing.JFrame {
                     try {
 
                         MimeMessage message = new MimeMessage(session);
-
-                        //Message message = new MimeMessage(session);
-
-                        //message.setHeader("MIME-Version", "1.0");
+                        
                         message.setHeader("Content-Type", "multipart/alternative; boundary=\"000000000000319cdd05d78693c5\"");
-                        //message.addHeader("Content-type", "text/HTML; charset=UTF-8");
-                        //message.addHeader("format", "flowed");
-                        //message.addHeader("Content-Transfer-Encoding", null);
                         message.removeHeader("Content-Transfer-Encoding");
-                        //message.getAllHeaders();
 
                         InternetAddress ia = new InternetAddress();
                         ia.setAddress("pruebaspsp111@gmail.com");
                         ia.setPersonal("pruebas psp");
                         message.setFrom(ia);
-                        //message.setReplyTo(InternetAddress.parse("pruebaspsp111@gmail.com"));
-                        /*
-                        Content-Type: text/plain; charset="iso-2022-jp"
-                        Content-Transfer-Encoding: 7bit
-                        Content-Disposition: inline; filename="test.txt"
-                        */
 
                         message.setRecipients(
                             Message.RecipientType.TO,
-                            InternetAddress.parse("pruebaspsp111@gmail.com, " + txtCorreo.getText())
+                            InternetAddress.parse(txtCorreo.getText())
                         );
-                        //String kjasd = "alkjsd";
+                        
                         message.setSubject(txtNombre.getText());
-                        //message.setText("SEXOOOOOO PLS", "text/html");
                         
                         String tiempoCopiaSeguridad = "";
                         String recuGustado = "";
@@ -814,12 +622,36 @@ public class MainForm extends javax.swing.JFrame {
                                 + "Cual es tu genero?" + "\n" + genero + "\n\n"
                                 + "Cual es tu pokemon fav?" + "\n" + txtPokeFav.getText() + "\n\n");
 
-                        /*message.setContent(
-                            "<h1>This is actual message embedded in HTML tags</h1>",
-                            "text/html");*/
-
-                        Transport.send(message);
-                        System.out.println("Done");
+                        
+                        Thread enviar = new Thread(){
+                            public void run(){
+                                try {
+                                    Transport.send(message);
+                                } catch (MessagingException me) {
+                                    me.printStackTrace();
+                                }
+                            }
+                          };
+                        
+                        enviar.start();
+                        
+                        
+                        
+                        JOptionPane.showMessageDialog(pnlSmtp,
+                        "El correo se ha enviado correctamente.",
+                        "Correo enviado",
+                        JOptionPane.INFORMATION_MESSAGE);
+                        
+                        Genero.clearSelection();
+                        COD.clearSelection();
+                        CopiaSeguridad.clearSelection();
+                        Curso.clearSelection();
+                        RecuperacionDeCorreos.clearSelection();
+                        RolLOL.clearSelection();
+                        txtNombre.setText("");
+                        txtCorreo.setText("");
+                        txtPokeFav.setText("");
+                        
                     } catch (MessagingException e) {
                         e.printStackTrace();
                     } catch (UnsupportedEncodingException ex) {
