@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -42,6 +43,7 @@ public class HiloCorreos implements Runnable{
     private static File directorio;
     private static DefaultListModel correosListModel;
     private static JList lstCorreos;
+    private ArrayList<String> correosGuardados = new ArrayList<>();
     public HiloCorreos(JLabel totalCorreos, String correosPath, JProgressBar progressBar, JButton btnSelectFile, JButton btnReadCorreos, File directorio, DefaultListModel correosListModel, JList lstCorreos) {
         this.totalCorreos = totalCorreos;
         this.correosPath = correosPath;
@@ -94,20 +96,16 @@ public class HiloCorreos implements Runnable{
             Message messages[] = folder.getMessages();
             int total = folder.getMessageCount();
             totalCorreos.setText("Número total de mensages: " + total);
-            //System.out.println("No of Unread Messages : " + folder.getUnreadMessageCount());
+
             for (int i = 0; i < messages.length; ++i) {
 
                 Message msg = messages[i];
                 
-                //if we don''t want to fetch messages already processed
+                
         
                 //if (!msg.isSet(Flags.Flag.SEEN)) {
-                    /*Enumeration headers = messages[i].getAllHeaders();
-                    while (headers.hasMoreElements()) {
-                        Header h = (Header) headers.nextElement();
-                        System.out.println(h.getName() + ": " + h.getValue());
-                    }
-                    System.out.println();*/
+                if(!correosGuardados.contains(msg.getSubject())){
+                  
   
                     System.out.println("MESSAGE #" + (i + 1) + ":");
                     String from = "unknown";
@@ -120,23 +118,19 @@ public class HiloCorreos implements Runnable{
                         from = msg.getFrom()[0].toString();
                     }
                     String subject = msg.getSubject();
-                    //System.out.println("Saving ... " + subject +" " + from);
-                    // you may want to replace the spaces with "_"
-                    // the TEMP directory is used to store the files
+                    System.out.println(subject);
+
                     String filename = correosPath + "/" + subject;
-                    saveParts(msg.getContent(), filename, subject);
+                    saveParts(msg.getContent(), filename);
 
                     msg.setFlag(Flags.Flag.SEEN, true);
 
-                    
-                    // to delete the message
-                    // msg.setFlag(Flags.Flag.DELETED, true);
-                /*} else {
+                } else {
 
                     System.out.println("MESSAGE #" + (i + 1) + ":" + " is already saved.");
 
                     String subject = msg.getSubject();
-                }*/
+                }
                 prgCorreos.setValue((i + 1) * prgCorreos.getMaximum() / (total));
             }
             btnSelectFile.setEnabled(true);
@@ -152,7 +146,7 @@ public class HiloCorreos implements Runnable{
         }
     }
 
-    private void saveParts(Object content, String filename, String subject) throws IOException, MessagingException {
+    private void saveParts(Object content, String filename) throws IOException, MessagingException {
         OutputStream out = null;
         InputStream in = null;
         try {
@@ -163,7 +157,7 @@ public class HiloCorreos implements Runnable{
                     MimeBodyPart part = (MimeBodyPart) multi.getBodyPart(j);
                     if (part.getContent() instanceof Multipart) {
                         // part-within-a-part, do some recursion...
-                        saveParts(part.getContent(), filename, subject);
+                        saveParts(part.getContent(), filename);
                     } else {
                         String extension = "";
                         if (part.isMimeType("text/html")) {
@@ -177,9 +171,11 @@ public class HiloCorreos implements Runnable{
                             }
                             filename = filename + "." + extension;
                             System.out.println("... " + filename);
-                            //cargarLista();
-                            //con esto el .txt.null no se pone y no se puede leer, mejor sera cargarlista de 0 aunque tarde mas? idk
-                            correosListModel.addElement(subject + "." + extension);
+                            
+                            
+                            File f = new File(filename);
+                            
+                            correosListModel.addElement(f.getName());
                             lstCorreos.setModel(correosListModel);
                             out = new FileOutputStream(new File(filename), true);
                             in = part.getInputStream();
@@ -203,10 +199,11 @@ public class HiloCorreos implements Runnable{
     }
     
     private void cargarLista() {
-        //correosListModel.clear();
         for (File f : directorio.listFiles()) {
             if(!f.isDirectory()){
                 correosListModel.addElement(f.getName());
+                String[] correo = f.getName().split(".txt");
+                correosGuardados.add(correo[0]);
             }
         }
         lstCorreos.setModel(correosListModel);
